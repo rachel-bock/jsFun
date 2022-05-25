@@ -18,26 +18,32 @@ const { dinosaurs, humans, movies } = require('./datasets/dinosaurs');
 
 // DATASET: kitties from ./datasets/kitties
 const kittyPrompts = {
-  orangePetNames() {
+  orangePetNames(pets) {
     // Return an array of just the names of kitties who are orange e.g.
         // ['Tiger', 'Snickers']
 
         /* CODE GOES HERE */
+    const orangePets = pets.filter((pet)=> pet.color === 'orange');
 
+    const orangePetNames = orangePets.map((pet)=> pet.name);
+
+    return orangePetNames;
     // Annotation:
     // Write your annotation here as a comment
   },
 
-  sortByAge() {
+  sortByAge(pets) {
     // Sort the kitties by their age
 
-    /* CODE GOES HERE */
+    let sortedPets = pets.sort((a, b) => b.age - a.age);
+    return sortedPets;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // Based on the test file, I am sorting the kitties by age.  Using the sort 
+    // method will give me the information I need to organize the kitties by age.
   },
 
-  growUp() {
+  growUp(pets) {
     // Return an array of kitties who have all grown up by 2 years e.g.
     // [{
     //   name: 'Felicia',
@@ -51,7 +57,17 @@ const kittyPrompts = {
     // },
     // ...etc]
 
-    /* CODE GOES HERE */
+    let output = pets.map(pet => {
+      pet.age += 2 
+      return {
+        name: pet.name,
+        age: pet.age, 
+        color: pet.color
+      }
+    });
+    return output;    
+    /* Because I want to add 2 to the age property, I will use the map iterator method 
+    */
   }
 };
 
@@ -85,11 +101,27 @@ const clubPrompts = {
     //   ...etc
     // }
 
-    /* CODE GOES HERE */
-
+    let output = clubs.reduce((acc, club) => {
+      club.members.forEach((member) => {
+        if (acc[member]) {
+          acc[member].push(club.club);        
+        } else {
+          acc[member] = [];
+          acc[member].push(club.club);
+        }
+      });
+      return acc;
+    }, {});
+  
+    return output;
     // Annotation:
-    // Write your annotation here as a comment
-  }
+    // The input will be an array of objects where the objects contain the club
+    // and an array of members.
+    // The output will be an object with keys that are the names of the club members
+    // with the value of an array with the name of the clubs for the member.
+    // I want to use reduce to convert the array to an object.
+    // For each club, I want to add the club to an array of clubs for each member.
+    }
 };
 
 
@@ -154,10 +186,23 @@ const cakePrompts = {
     //    ..etc
     // ]
 
-    /* CODE GOES HERE */
+    const cakesInStock = cakes.map((cake) => {
+      let e = {};
+      e.flavor = cake.cakeFlavor;
+      e.inStock = cake.inStock;
+      return e;
+    });
+    
+    return cakesInStock;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // I want to return an array of objects that includes the original information
+    // received in the dataset. The input I receive is an array of cake objects
+    // including keys of cakeFlavor and inStock among other keys.  We want to make
+    // an array to output that contains mini-cake objects that contain only the 
+    // flavor and amount in stock.  For this purpose, I will use map to create 
+    // an array of the same length with objects containing only the flavor and 
+    // inStock properties of the original cake element.
   },
 
   onlyInStock() {
@@ -181,20 +226,33 @@ const cakePrompts = {
     // ..etc
     // ]
 
-    /* CODE GOES HERE */
-
+    let filterCakes = cakes.filter(cake => cake.inStock !== 0);
+    return filterCakes;
+    
     // Annotation:
-    // Write your annotation here as a comment
+    /*
+    I want to return an array of objects that includes cake objects where the 
+    inStock property is not equal to 0.  
+    The input array will be equal to or longer than the output array. For this 
+    purpose, I will use the filter method to filter cakes that are not inStock.
+    */
   },
 
   totalInventory() {
     // Return the total amount of cakes in stock e.g.
     // 59
 
-    /* CODE GOES HERE */
+    let total = cakes.reduce((acc, cake) => {
+      acc += cake.inStock;
 
+      return acc;
+    }, 0);
+
+    return total;
     // Annotation:
-    // Write your annotation here as a comment
+    /* The input is an array of objects with cake details.  I want a single number
+    as an output.  As such, I will use the reduce method.
+    */
   },
 
   allToppings() {
@@ -219,10 +277,30 @@ const cakePrompts = {
     //    ...etc
     // }
 
-    /* CODE GOES HERE */
+    const tops = [];
+    let ourCakes = cakes.forEach((cake) => {
+      cake.toppings.forEach((topping)=> {
+        tops.push(topping)
+      });
+    });
 
+    tops.reduce((acc, t) => {
+      if(acc[t]) {
+        acc[t] += 1;
+      } else {
+        acc[t] = 1;
+      }
+
+      return acc;
+    }, {});
     // Annotation:
-    // Write your annotation here as a comment
+    // In order to get an object where the keys are each topping and the values
+    // are the amount of that topping to be bought, I need a list of all toppings
+    // and a count of the number of times the topping appears in the list.
+    // In other words, for each cake, I will iterate over the array of toppings
+    // to extract the topping to be saved into another array that will be our
+    // list of toppings.  Once I have the list of toppings, I will count the 
+    // number of times that element appears in the list of toppings.
   }
 };
 

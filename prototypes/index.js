@@ -3,6 +3,7 @@ const { puppers } = require('./datasets/puppers');
 const { mods } = require('./datasets/mods');
 const { cakes } = require('./datasets/cakes');
 const { classrooms } = require('./datasets/classrooms');
+const { books } = require('./datasets/books');
 const { breweries } = require('./datasets/breweries');
 const { nationalParks } = require('./datasets/nationalParks');
 const { weather } = require('./datasets/weather');
@@ -91,7 +92,7 @@ const kittyPrompts = {
 
 // DATASET: clubs from ./datasets/clubs
 const clubPrompts = {
-  membersBelongingToClubs() {
+  membersBelongingToClubs(clubs) {
     // Your function should access the clubs data through a parameter (it is being passed as an argument in the test file)
     // Create an object whose keys are the names of people, and whose values are
     // arrays that include the names of the clubs that person is a part of. e.g.
@@ -152,10 +153,20 @@ const modPrompts = {
     //   { mod: 4, studentsPerInstructor: 8 }
     // ]
 
-    /* CODE GOES HERE */
-
+    let output = mods.map((mod) => {
+      let element = {};
+      element.mod = mod.mod;
+      element.studentsPerInstructor = mod.students / mod.instructors;
+      return element;
+    });
+  
+    return output;
     // Annotation:
-    // Write your annotation here as a comment
+    /* For each mod, we want to make a new key value pair that
+        consists of the studentsPerInstructor.  Because I am 
+        going to return an array that is the same length as
+        the original array, I will use the map iterator method.
+    */
   }
 };
 
@@ -260,10 +271,23 @@ const cakePrompts = {
     // every cake in the dataset e.g.
     // ['dutch process cocoa', 'toasted sugar', 'smoked sea salt', 'berries', ..etc]
 
-    /* CODE GOES HERE */
+    let toppings = [];
+    cakes.forEach((cake) => {
+      cake.toppings.forEach((topping) => {
+        if (!toppings.includes(topping)) {
+          toppings.push(topping);
+        }
+      });
+    });
+    
+    return toppings;
+  
+  /* 
+  Input: Array of objects containing an array of toppings.
+  Output: Array of toppings.
+  
+  */
 
-    // Annotation:
-    // Write your annotation here as a comment
   },
 
   groceryList() {
@@ -284,7 +308,7 @@ const cakePrompts = {
       });
     });
 
-    tops.reduce((acc, t) => {
+    let output = tops.reduce((acc, t) => {
       if(acc[t]) {
         acc[t] += 1;
       } else {
@@ -293,6 +317,9 @@ const cakePrompts = {
 
       return acc;
     }, {});
+
+    return output;
+
     // Annotation:
     // In order to get an object where the keys are each topping and the values
     // are the amount of that topping to be bought, I need a list of all toppings
@@ -303,9 +330,6 @@ const cakePrompts = {
     // number of times that element appears in the list of toppings.
   }
 };
-
-
-
 
 
 
@@ -331,7 +355,8 @@ const classPrompts = {
     //   { roomLetter: 'G', program: 'FE', capacity: 29 }
     // ]
 
-    /* CODE GOES HERE */
+    let output =  classrooms.filter(classs => classs.program === 'FE');
+    return output;
 
     // Annotation:
     // Write your annotation here as a comment
@@ -345,7 +370,23 @@ const classPrompts = {
     //   beCapacity: 96
     // }
 
-    /* CODE GOES HERE */
+    let feCap = classrooms.reduce((acc, classs) => {
+      if (classs.program === 'FE') {
+        acc += classs.capacity;
+      } 
+      return acc;
+    }, 0);
+    let beCap = classrooms.reduce((acc, classs)=> {
+      if (classs.program === 'BE') {
+        acc += classs.capacity;
+      } 
+      return acc;
+    }, 0);
+  
+    return { 
+      feCapacity: feCap,
+      beCapacity: beCap
+    }  
 
     // Annotation:
     // Write your annotation here as a comment
@@ -354,7 +395,8 @@ const classPrompts = {
   sortByCapacity() {
     // Return the array of classrooms sorted by their capacity (least capacity to greatest)
 
-    /* CODE GOES HERE */
+    classrooms.sort((a, b) => a.capacity - b.capacity);
+    return classrooms;  
 
     // Annotation:
     // Write your annotation here as a comment
@@ -380,12 +422,18 @@ const bookPrompts = {
     //   'The Curious Incident of the Dog in the Night - Time', 'The Bell Jar',
     //   'Catch-22', 'Treasure Island']
 
-
-    /* CODE GOES HERE */
-
-    // Annotation:
-    // Write your annotation here as a comment
-
+    let noCrime = books.filter(book => book.genre !== 'True Crime');
+    let noViolence = noCrime.filter(book => book.genre !== 'Horror');
+    let output = [];
+    noViolence.forEach(book => output.push(book.title));
+    return output;
+    /*
+    Input: Array with book objects including keys of title, author, genre, 
+    and published date.
+    Desired Output: An array with strings that are the title of the books
+    that are not 'Horror' or 'True Crime' genres.
+    Need to create an array that is filtered 
+    */
   },
   getNewBooks() {
     // return an array of objects containing all books that were
@@ -395,12 +443,22 @@ const bookPrompts = {
     //  { title: 'Life of Pi', year: 2001 },
     //  { title: 'The Curious Incident of the Dog in the Night-Time', year: 2003 }]
 
-    /* CODE GOES HERE */
+    let output = books.filter(book => book.published > 1990).map(book => {
+      let e = {};
+      e.title = book.title;
+      e.year = book.published;
+      return e;
+    });
 
-    // Annotation:
-    // Write your annotation here as a comment
+    return output;
+
+    /* Annotation:
+    Input is the books array with book objects.  Output is the array of book objects where 
+    the book has a year that ends in 90 or greater.  
+    I want to filter the array to get books where the year is greater than 1990.
+    Then I want to map over the books array to get all books with only the title and the year.
+    */
   }
-
 };
 
 
@@ -417,10 +475,24 @@ const weatherPrompts = {
     // return an array of all the average temperatures. Eg:
     // [ 40, 40, 44.5, 43.5, 57, 35, 65.5, 62, 14, 46.5 ]
 
-    /* CODE GOES HERE */
+    let output = [];
+    let avgTemps = weather.map(place => {
+      avgTemp = (place.temperature.high + place.temperature.low)/2
+      output.push(avgTemp);
+    });
 
+    return output;
     // Annotation:
-    // Write your annotation here as a comment
+    /*
+    The input is an array of locations that includes a property with a key of temperature 
+    where the value of the temperature key is an object with the high and low temperatures 
+    in the location.
+
+    The output we want is an array of all the average temperatures.  I want to create an array
+    to output.  I also want to calculate the average temperature for each location.  To get 
+    an array that matches the length of the original array, I will use map to transform the 
+    array elements.
+    */
   },
 
   findSunnySpots() {
@@ -430,10 +502,21 @@ const weatherPrompts = {
     // 'New Orleans, Louisiana is sunny.',
     // 'Raleigh, North Carolina is mostly sunny.' ]
 
-    /* CODE GOES HERE */
+    let output = [];
+
+    let temporary = weather.filter(place => (place.type === 'sunny' || place.type === 'mostly sunny'));
+
+    temporary.forEach(place => {
+      output.push(`${place.location} is ${place.type}.`);
+    });
+
+    return output;
 
     // Annotation:
-    // Write your annotation here as a comment
+    /* I want to return an array of sentences of places that are sunny or mostly sunny.
+    The input that I have is an array of objects that contains the location and type of weather.
+    I want to filter the input array based on the weather type and create a sentence that can be
+    put into the output array.*/
   },
 
   findHighestHumidity() {
@@ -445,8 +528,9 @@ const weatherPrompts = {
     //   temperature: { high: 49, low: 38 }
     // }
 
-    /* CODE GOES HERE */
+    let output = weather.sort((a, b) => b.humidity - a.humidity);  
 
+    return output[0];
     // Annotation:
     // Write your annotation here as a comment
 
@@ -474,7 +558,9 @@ const nationalParksPrompts = {
     /* CODE GOES HERE */
 
     // Annotation:
-    // Write your annotation here as a comment
+    /* 
+    Input array is a list of national parks.
+    */
   },
 
   getParkInEachState() {

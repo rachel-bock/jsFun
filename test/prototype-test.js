@@ -127,7 +127,7 @@ describe("PROTOTYPES", () => {
   });
 
   describe("Club Prompts", () => {
-    it.skip("membersBelongingToClubs", () => {
+    it("membersBelongingToClubs", () => {
       const e = clubPrompts.membersBelongingToClubs(clubs);
 
       expect(e).to.deep.equal({
@@ -146,7 +146,7 @@ describe("PROTOTYPES", () => {
   });
 
   describe("Mod Prompts", () => {
-    it.skip("studentsPerMod", () => {
+    it("studentsPerMod", () => {
       const e = modPrompts.studentsPerMod();
 
       expect(e).to.deep.equal([{
@@ -226,13 +226,13 @@ describe("PROTOTYPES", () => {
       expect(e).to.deep.equal(59)
     });
 
-    it.skip("allToppings", () => {
+    it("allToppings", () => {
       const e = cakePrompts.allToppings();
 
       expect(e).to.deep.equal(["dutch process cocoa", "toasted sugar", "smoked sea salt", "berries", "edible flowers", "mint", "cranberry", "crystallized ginger"])
     });
 
-    it.skip("groceryList", () => {
+    it("groceryList", () => {
       const e = cakePrompts.groceryList();
 
       expect(e).to.deep.equal({
@@ -249,7 +249,7 @@ describe("PROTOTYPES", () => {
   });
 
   describe("Class Prompts", () => {
-    it.skip("feClassrooms", () => {
+    it("feClassrooms", () => {
       const e = classPrompts.feClassrooms();
 
       expect(e).to.deep.equal([{
@@ -271,7 +271,7 @@ describe("PROTOTYPES", () => {
       }])
     });
 
-    it.skip("totalCapacities", () => {
+    it("totalCapacities", () => {
       const e = classPrompts.totalCapacities();
 
       expect(e).to.deep.equal({
@@ -280,7 +280,7 @@ describe("PROTOTYPES", () => {
       })
     });
 
-    it.skip("sortByCapacity", () => {
+    it("sortByCapacity", () => {
       const e = classPrompts.sortByCapacity();
 
       expect(e).to.deep.equal([{
@@ -320,7 +320,7 @@ describe("PROTOTYPES", () => {
   });
 
   describe("Book prompts", () => {
-    it.skip("removeViolence", () => {
+    it("removeViolence", () => {
       const e = bookPrompts.removeViolence(books);
 
       expect(e).to.deep.equal(['1984',
@@ -339,7 +339,7 @@ describe("PROTOTYPES", () => {
         'Treasure Island'])
     });
 
-    it.skip("getNewBooks", () => {
+    it("getNewBooks", () => {
       const e = bookPrompts.getNewBooks(books);
 
       expect(e).to.deep.equal([{
@@ -353,20 +353,20 @@ describe("PROTOTYPES", () => {
   });
 
   describe("Weather prompts", () => {
-    it.skip("getAverageTemps", () => {
+    it("getAverageTemps", () => {
       const e = weatherPrompts.getAverageTemps();
 
       expect(e).to.deep.equal([
         40, 40, 44.5, 43.5, 57, 35, 65.5, 62, 14, 46.5
       ])
     }),
-      it.skip("findSunnySpots", () => {
+      it("findSunnySpots", () => {
         const e = weatherPrompts.findSunnySpots();
 
         expect(e).to.deep.equal(['Atlanta, Georgia is sunny.', 'New Orleans, Louisiana is sunny.', 'Raleigh, North Carolina is mostly sunny.']
         )
       }),
-      it.skip("findHighestHumidity", () => {
+      it("findHighestHumidity", () => {
         const e = weatherPrompts.findHighestHumidity();
 
         expect(e).to.deep.equal({
@@ -379,7 +379,7 @@ describe("PROTOTYPES", () => {
   });
 
   describe("National Park Prompts", () => {
-    it.skip("getParkVisitList", () => {
+    it("getParkVisitList", () => {
       const e = nationalParksPrompts.getParkVisitList();
 
       expect(e).to.deep.equal({
@@ -387,7 +387,7 @@ describe("PROTOTYPES", () => {
         parksVisited: ['Rocky Mountain', 'Acadia', 'Zion']
       })
     }),
-      it.skip("getParkActivities", () => {
+      it("getParkActivities", () => {
         const e = nationalParksPrompts.getParkActivities();
 
         expect(e).to.deep.equal(
@@ -405,7 +405,7 @@ describe("PROTOTYPES", () => {
             'rock climbing'
           ])
       }),
-      it.skip("getParkInEachState", () => {
+      it("getParkInEachState", () => {
         const e = nationalParksPrompts.getParkInEachState();
 
         expect(e).to.deep.equal(

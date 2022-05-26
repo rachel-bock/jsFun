@@ -104,12 +104,11 @@ const clubPrompts = {
 
     let output = clubs.reduce((acc, club) => {
       club.members.forEach((member) => {
-        if (acc[member]) {
-          acc[member].push(club.club);        
-        } else {
+        if (!acc[member]) {
           acc[member] = [];
-          acc[member].push(club.club);
         }
+        acc[member].push(club.club);
+        
       });
       return acc;
     }, {});
@@ -555,11 +554,25 @@ const nationalParksPrompts = {
     //   parksVisited: ["Rocky Mountain", "Acadia", "Zion"]
     //}
 
-    /* CODE GOES HERE */
+    let output = {
+      parksToVisit: [],
+      parksVisited: [],
+    };
+    
+    nationalParks.forEach( park => {
+      if (park.visited) {
+        output.parksVisited.push(park.name);
+      } else {
+        output.parksToVisit.push(park.name);
+      };
+    });
 
+    return output;
     // Annotation:
     /* 
-    Input array is a list of national parks.
+    Input array is a list of national parks objects that include keys for name, visited, 
+    location and activities.  Output includes an object with two arrays.  One array in the output
+    object will be for the parks visited while the other is a list of parks to visit.
     */
   },
 
@@ -572,11 +585,19 @@ const nationalParksPrompts = {
     // { Utah: 'Zion' },
     // { Florida: 'Everglades' } ]
 
+    let output = nationalParks.reduce((acc, park) => {
+      let temp = {};
+      temp[park.location] = park.name;
+      acc.push(temp);
+      return acc;
+    }, []);
 
-    /* CODE GOES HERE */
-
+    return output;
     // Annotation:
-    // Write your annotation here as a comment
+    /* 
+    Input array is an array of park objects.  Output array is an array of objects where the 
+    key is the location of the park object and the value is the name of the park object.
+    */
   },
 
   getParkActivities() {
@@ -595,10 +616,13 @@ const nationalParksPrompts = {
     //   'backpacking',
     //   'rock climbing' ]
 
-    /* CODE GOES HERE */
 
     // Annotation:
-    // Write your annotation here as a comment
+    /*
+    If the activity is not already included in the output array, then include it.
+    Input is an array of parks objects with an array of activities.  
+    
+    */
   }
 };
 

@@ -753,23 +753,55 @@ const turingPrompts = {
     //  { name: 'Robbie', studentCount: 18 }
     // ]
 
-    /* CODE GOES HERE */
+    let output = [];
 
+    instructors.forEach(teacher => {
+      let temp = cohorts.find(cohort => cohort.module === teacher.module );
+
+      output.push({
+        name: teacher.name,
+        studentCount: temp.studentCount
+      });
+    });
+
+    return output;
     // Annotation:
-    // Write your annotation here as a comment
+    /* 
+    For the input, I have two arrays of objects.
+    I need to pull the instructor's name from the instructors array and the studentCount from the cohorts array.
+    */ 
   },
 
   studentsPerInstructor() {
     // Return an object of how many students per teacher there are in each cohort e.g.
     // {
-    // cohort1806: 9,
-    // cohort1804: 10.5
+    // cohort1806: 15,
+    // cohort1804: 7, 
+    // cohort1803: 10, 
+    // cohort1801: 9
     // }
 
-    /* CODE GOES HERE */
+    let output = {};
 
+    cohorts.forEach((cohort) => {
+      let temp = instructors.reduce((acc, instructor) => {
+        if(cohort.module === instructor.module) {
+          acc += 1;
+        }
+        return acc;
+      }, 0);
+      output['cohort'+cohort.cohort] = cohort.studentCount / temp;
+    });
+
+    return output;
     // Annotation:
-    // Write your annotation here as a comment
+    /*
+       I want to get the cohort number from the
+       cohorts array along with the number of
+       students per teacher in each cohort.  The
+       number of students per teacher in each cohort
+       will need to be calculated.
+    */
   },
 
   modulesPerTeacher() {
@@ -787,10 +819,31 @@ const turingPrompts = {
     //     Will: [1, 2, 3, 4]
     //   }
 
-    /* CODE GOES HERE */
+    let output = {};
+    instructors.forEach(instructor => {
+      instructor.teaches.forEach( topic => {
+        cohorts.forEach(cohort => {
+          if(!output[instructor.name]) {
+            output[instructor.name] = [];
+          };
+          if (cohort.curriculum.includes(topic) && !output[instructor.name].includes(cohort.module)) {
+              output[instructor.name].push(cohort.module);
+              output[instructor.name].sort();
+          }
+        });
+      });
+    });
+      
+    return output;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // Input teacher from Instructors array.
+    // output is an object => reduce
+    // for each instructor, I need to compare what
+    // they teach to the curriculum and return the 
+    // module number that includes that curriculum.
+    // 
+
   },
 
   curriculumPerTeacher() {
@@ -803,10 +856,26 @@ const turingPrompts = {
     //   recursion: [ 'Pam', 'Leta' ]
     // }
 
-    /* CODE GOES HERE */
+    let output = cohorts.reduce((acc, cohort) => {
+      cohort.curriculum.forEach((topic) => {
+        if (!acc[topic]) {
+          acc[topic] = [];
+        }
+        instructors.forEach(teacher => {
+          if (teacher.teaches.includes(topic) && !acc[topic].includes(teacher.name)){
+            acc[topic].push(teacher.name);
+          }
+        });
+      });
+      return acc;      
+    }, {});
 
+
+    return output;
     // Annotation:
-    // Write your annotation here as a comment
+    /* 
+    Input for this prompt includes the instructors array of objects and the cohorts array of objects.  The desired output is an object where the keys are the curriculum topic and the values are arrays of instructor names.
+    */
   }
 };
 

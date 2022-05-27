@@ -616,7 +616,17 @@ const nationalParksPrompts = {
     //   'backpacking',
     //   'rock climbing' ]
 
+    let output = nationalParks.reduce((acc, park) => {
+      park.activities.forEach((toDo) => {
+        if (!acc.includes(toDo)) {
+          acc.push(toDo);
+        }
+      });      
 
+      return acc;
+    }, []);
+
+    return output;
     // Annotation:
     /*
     If the activity is not already included in the output array, then include it.

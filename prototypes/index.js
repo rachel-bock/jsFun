@@ -655,8 +655,14 @@ const breweryPrompts = {
     // Return the total beer count of all beers for every brewery e.g.
     // 40
 
-    /* CODE GOES HERE */
+    let output = breweries.reduce((acc, brewery) => {
+      brewery.beers.forEach((beer) => {
+        acc += 1;
+      });
+      return acc;
+    }, 0);
 
+    return output;
     // Annotation:
     // Write your annotation here as a comment
   },
@@ -670,7 +676,18 @@ const breweryPrompts = {
     // ...etc.
     // ]
 
-    /* CODE GOES HERE */
+    let output = breweries.map((brewery) => {
+      let beers = brewery.beers.reduce((acc, beer) => {
+        acc += 1;
+        return acc;
+      }, 0);
+      return {
+        name: brewery.name,
+        beerCount: beers
+      }
+    });
+
+    return output;
 
     // Annotation:
     // Write your annotation here as a comment
@@ -681,8 +698,16 @@ const breweryPrompts = {
     // e.g.
     // { name: 'Barrel Aged Nature\'s Sweater', type: 'Barley Wine', abv: 10.9, ibu: 40 }
 
-    /* CODE GOES HERE */
+    let output = [];
+    breweries.forEach(brewery => {
+      brewery.beers.forEach(beer => {
+        output.push(beer);
+      });
+    });
 
+    output.sort((a, b) => b.abv - a.abv);
+
+    return output[0];
     // Annotation:
     // Write your annotation here as a comment
   }

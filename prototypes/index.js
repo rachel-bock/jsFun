@@ -906,15 +906,31 @@ const bossPrompts = {
     //   { bossName: 'Scar', sidekickLoyalty: 16 }
     // ]
 
-    /* CODE GOES HERE */
-
     // Annotation:
-    // Write your annotation here as a comment
+    /*
+    Inputs: An array with sidekick objects and an object with boss objects.
+    Output: Array of new objects with bossName and total sidekick loyalty.
+    */
+
+    let bossKeys = Object.keys(bosses);
+
+    let temporary = bossKeys.map((boss) => {
+      let loyalty = sidekicks.reduce((acc, sidekick)=>{
+        if (sidekick.boss.toLowerCase() === boss) {
+          acc += sidekick.loyaltyToBoss;
+        }
+        return acc;
+      }, 0);
+    
+      return {
+        bossName: bosses[boss].name, 
+        sidekickLoyalty: loyalty
+      };
+    });
+
+    return temporary;
   }
 };
-
-
-
 
 
 
@@ -947,10 +963,32 @@ const astronomyPrompts = {
     //     color: 'red' }
     // ]
 
-    /* CODE GOES HERE */
-
     // Annotation:
-    // Write your annotation here as a comment
+    /* 
+    Input is an array of star objects with an object of constellation objects.
+    Output is an array of star objects where the star is listed in a constellation.
+    I want to filter out the stars that are in the three constellations that are listed in the constellations object.
+
+    */
+
+    let constellationKeys = Object.keys(constellations);
+
+    let output = [];
+    let temporary = [];
+
+    constellationKeys.forEach((constellation) => {
+      constellations[constellation].stars.forEach((star) =>{
+        temporary.push(star);
+        // console.log(temporary);
+      });
+    });
+
+    stars.forEach((star) => {
+      if(temporary.includes(star.name)) {
+        output.push(star);
+      }
+    });
+    return output;
   },
 
   starsByColor() {
@@ -964,10 +1002,21 @@ const astronomyPrompts = {
     //   red: [{obj}]
     // }
 
-    /* CODE GOES HERE */
-
     // Annotation:
-    // Write your annotation here as a comment
+    /*
+    Input is an array of star objects that includes the star's color.
+    Output is an object of arrays of all the star objects with the same color.
+    */
+
+    let output = stars.reduce((acc, star)=>{
+      if(!acc[star.color]) {
+        acc[star.color] = [];
+      }
+      acc[star.color].push(star);
+      return acc;
+    }, {});
+
+    return output;
   },
 
   constellationsStarsExistIn() {
@@ -985,11 +1034,25 @@ const astronomyPrompts = {
     //    "Orion",
     //    "The Little Dipper" ]
 
-
-    /* CODE GOES HERE */
-
     // Annotation:
-    // Write your annotation here as a comment
+    /* 
+    Input is an array of star objects.  Output is the array of constellation names sorted by brightness.
+
+    I want to pull the visualMagnitude and constellation out of the stars array.  Then, I want to sort the array based on visualMagnitude.  Then, I want to pull the constellation name out of the sorted array.
+    */
+    stars.sort((a, b) => {
+      a.visualMagnitude - b.visualMagnitude;
+    });
+
+    let output = [];
+    stars.forEach((star) => {
+      if (star.constellation !== '') {
+        output.push(star.constellation);
+      }
+    });
+
+    console.log(output);
+    return output;
   }
 };
 
@@ -1016,10 +1079,22 @@ const ultimaPrompts = {
     // Return the sum of the amount of damage for all the weapons that our characters can use
     // Answer => 113
 
-    /* CODE GOES HERE */
-
     // Annotation:
-    // Write your annotation here as a comment
+    // Input is an array of characters and an object with weapons.
+    // Output is a number that is the sum of the amount of damage for all the weapons that 
+    // our characters can use.
+    // To get the 113 that is expected, I am adding the total 
+    // damage for each of the weapons listed in the 
+    // characters array of objects.
+
+    let output = characters.reduce((acc, character) => {
+      character.weapons.forEach(weapon => {
+        acc += weapons[weapon].damage;
+      });
+
+      return acc;
+    }, 0);
+    return output;
   },
 
   charactersByTotal() {
@@ -1027,10 +1102,38 @@ const ultimaPrompts = {
     // Return the sum damage and total range for each character as an object.
     // ex: [ { Avatar: { damage: 27, range: 24 }, { Iolo: {...}, ...}
 
-    /* CODE GOES HERE */
-
     // Annotation:
-    // Write your annotation here as a comment
+    /* 
+    Input is an array of characters and an object of weapons
+    that includes the damage and range per weapon.  The
+    desired output is an array of objects that includes a key
+    of the character name which includes
+    objects that include keys of damage and range.  The 
+    character name in the output array will be dynamic. The 
+    total damange and total range will need to be calculated.
+    */
+
+    let output = characters.reduce((acc, character)=> {
+      let temp = {
+        damage: character.weapons.reduce((acc, weapon) => {
+          acc += weapons[weapon].damage;
+          return acc;
+        }, 0),
+        range: character.weapons.reduce((acc, weapon) => {
+          acc += weapons[weapon].range;
+          return acc;
+        }, 0)
+      }
+      
+      acc.push({
+        [character.name]: temp,
+      })
+
+      return acc;
+    }, []);
+
+    return output;
+
   },
 };
 
@@ -1063,10 +1166,30 @@ const dinosaurPrompts = {
     //   'Jurassic World: Fallen Kingdom': 18
     // }
 
-    /* CODE GOES HERE */
-
     // Annotation:
-    // Write your annotation here as a comment
+    /* 
+
+    Inputs: dinosaurs object of dinosaur objects and movies array of movie objects with dinos array within.
+
+    Output: movie name and number of awesome dinosaurs.
+
+    Need a reduce and filter?
+     */
+
+
+    let output = movies.reduce((acc, movie) => {
+
+      let movieDinos = movie.dinos.filter(dino => dinosaurs[dino].isAwesome);
+
+      let numDinos = movieDinos.reduce((acc, dino) => {
+        acc += 1;
+        return acc;
+      }, 0);
+
+      acc[movie.title] = numDinos;
+      return acc;
+    }, {});
+    return output;
   },
 
   averageAgePerMovie() {
@@ -1093,12 +1216,30 @@ const dinosaurPrompts = {
             'Jurassic World: Fallen Kingdom': 59
           }
       }
+    Annotation:
+      Input is an object of human objects with a year of birth and an array of movie objects including a year released.  
+
+      To calculate the average age of the cast, I will need to know the age of the cast members in the year that the movie was released.
+
+      Need: movies[index].yearReleased - humans[name].yearBorn for each human in movies[index].cast array.  
+
+      I will also need to know the total number of cast members in order to calculate their average age.
+
+      The final output is going to be an object with the name of the director as the keys.  It will contain objects with the movie title and the average age of the case on the year that the movie was released.
+
+      To get the final output object, I want to use a reduce function to prepare the object.  To get the number of cast members in the movie, I can use the length of the array of ages of cast members.
     */
 
-    /* CODE GOES HERE */
+      
 
-    // Annotation:
-    // Write your annotation here as a comment
+
+
+
+
+
+
+
+
   },
 
   uncastActors() {

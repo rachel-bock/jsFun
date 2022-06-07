@@ -1040,9 +1040,7 @@ const astronomyPrompts = {
 
     I want to pull the visualMagnitude and constellation out of the stars array.  Then, I want to sort the array based on visualMagnitude.  Then, I want to pull the constellation name out of the sorted array.
     */
-    stars.sort((a, b) => {
-      a.visualMagnitude - b.visualMagnitude;
-    });
+    stars.sort((a, b) => a.visualMagnitude - b.visualMagnitude);
 
     let output = [];
     stars.forEach((star) => {
@@ -1051,7 +1049,6 @@ const astronomyPrompts = {
       }
     });
 
-    console.log(output);
     return output;
   }
 };
@@ -1137,7 +1134,10 @@ const ultimaPrompts = {
   },
 };
 
-
+// let myNames = {
+//   nickName: Mama,
+//   realName: Rachel
+// }
 
 
 
@@ -1221,7 +1221,7 @@ const dinosaurPrompts = {
 
       To calculate the average age of the cast, I will need to know the age of the cast members in the year that the movie was released.
 
-      Need: movies[index].yearReleased - humans[name].yearBorn for each human in movies[index].cast array.  
+      ***Need: movies[index].yearReleased - humans[name].yearBorn for each human in movies[index].cast array***  
 
       I will also need to know the total number of cast members in order to calculate their average age.
 
@@ -1230,16 +1230,32 @@ const dinosaurPrompts = {
       To get the final output object, I want to use a reduce function to prepare the object.  To get the number of cast members in the movie, I can use the length of the array of ages of cast members.
     */
 
-      
+      let output = movies.reduce((acc, movie) => {
+        let ages = [];
+        let averageAge = 0;
+        let theCast = movie.cast;
+        theCast.forEach((castMember) => {
+          ages.push(movie.yearReleased - humans[castMember].yearBorn);
+        });
 
+        let totalAges = ages.reduce((acc, age) => {
+          acc += age;
+          return acc;
+        }, 0);
 
+        averageAge = parseInt((totalAges / theCast.length).toFixed(1));
 
+        // console.log("movie: ", movie.title, "Ages:" , ages);
 
+        if (!acc[movie.director]) {
+          acc[movie.director] = {};
+        }
+        acc[movie.director][movie.title] = averageAge;
 
+        return acc;
+      }, {});
 
-
-
-
+      return output
   },
 
   uncastActors() {
@@ -1268,10 +1284,51 @@ const dinosaurPrompts = {
       }]
     */
 
+
     /* CODE GOES HERE */
 
     // Annotation:
     // Write your annotation here as a comment
+
+    // Problem: Which humans are not in the movies' casts' arrays?
+    // Input: movies (array) and humans (object)
+    // Output: Array of human objects.
+
+    //  Reduce and filter...  Maybe map to transform the human object to {name, nationality, imdbStarMeterRating}
+
+    // Object.keys()   
+
+    let output = [];
+    let actors = Object.keys(humans);
+
+    // if movies[index].cast[index2] does not include humans[name] then include in output array.
+
+    // humans[movies[index].cast[index2]] = name of actor.
+
+      movies.forEach(movie => {
+        movie.cast.forEach(actor => {
+          
+          // If we find cast member in actors array, then grab index and remove name from actors array.
+
+          if (actors.includes(actor)) {
+            let index = actors.indexOf(actor);
+            actors.splice(index, 1);
+          }
+          
+        });
+      });
+
+      let final = actors.map(actor => {
+        return {
+          name: actor,
+        nationality: humans[actor].nationality,
+        imdbStarMeterRating: humans[actor].imdbStarMeterRating
+      }});
+
+      final.sort((a,b) => a.nationality.localeCompare(b.nationality));
+      
+      return final;
+
   },
 
   actorsAgesInMovies() {
